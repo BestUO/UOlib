@@ -167,3 +167,31 @@ int AlgorithmExam::Catalan(int n)
 		return tmp;
 	}
 }
+
+void AlgorithmExam::taskscheduling(const int &ntask, const int &nsvr, const int *time)
+{
+	int *now = new int[nsvr];
+	memset(now, 0,sizeof(int) * nsvr);
+	int *next = new int[nsvr];
+	memset(next, 0, sizeof(int) * nsvr);
+	
+	for (int i = 0; i < ntask; i++)
+	{
+		int svrnum = 0;
+		int min = now[0] + time[0];
+		for (int j = 0; j < nsvr; j++)
+		{
+			memcpy(next, now, sizeof(int) * nsvr);
+			next[j] += time[j];
+			if (min > next[j])
+			{
+				svrnum = j;
+				min = next[j];
+			}
+		}
+		now[svrnum] += time[svrnum];
+	}
+	for (int i = 0; i < nsvr; i++)
+		std::cout << now[i] << '\t';
+	std::cout << std::endl;
+}

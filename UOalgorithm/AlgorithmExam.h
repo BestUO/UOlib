@@ -19,6 +19,8 @@ public:
 	void EQsum();
 	//12个高矮不同的人排两排，每排必须从矮到高排列，第二排比对应的第一排的人高，有几种排列方式
 	void paidui();
+	//任务调度算法,time[m]:第m台机器处理一个任务的时间，所有任务都相同
+	void taskscheduling(const int &ntask,const int &nsvr,const int *time);
 
 private:
 	///////数塔问题:
