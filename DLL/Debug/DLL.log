@@ -1,0 +1,8 @@
+﻿  testDLL.cpp
+  stdafx.cpp
+  dllmain.cpp
+  DLLexport.cpp
+  正在生成代码...
+    正在创建库 C:\Users\owner\Desktop\UOlib\Debug\DLL.lib 和对象 C:\Users\owner\Desktop\UOlib\Debug\DLL.exp
+  DLL.vcxproj -> C:\Users\owner\Desktop\UOlib\Debug\DLL.dll
+  DLL.vcxproj -> C:\Users\owner\Desktop\UOlib\Debug\DLL.pdb (Full PDB)
