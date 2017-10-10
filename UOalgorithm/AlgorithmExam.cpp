@@ -2,6 +2,8 @@
 #include <vector>
 #include <algorithm>
 #include <set>
+#include <string>
+#include <memory>
 
 AlgorithmExam::AlgorithmExam()
 {
@@ -194,4 +196,80 @@ void AlgorithmExam::taskscheduling(const int &ntask, const int &nsvr, const int 
 	for (int i = 0; i < nsvr; i++)
 		std::cout << now[i] << '\t';
 	std::cout << std::endl;
+}
+
+bool cmp(const std::string &a, const std::string &b)
+{
+	return (a + b) > (b + a);
+}
+
+void AlgorithmExam::maxnum()
+{
+	int a = 0;
+	std::cin >> a;
+
+	std::vector<std::string> v;
+	for (int i = 0; i < a; i++)
+	{
+		std::string s;
+		std::cin >> s;
+		v.push_back(s);
+	}
+	std::sort(v.begin(), v.end(), cmp);
+	for (int i = 0; i < a; i++)
+		std::cout << v[i];
+}
+
+struct NODE
+{
+	NODE *LC;
+	NODE *RC;
+	int ID;
+	NODE()
+	{
+		ID = 0;
+		LC = nullptr;
+		RC = nullptr;
+	}
+	//~NODE()
+	//{
+	//	if (LC)
+	//		delete LC;
+	//	if (RC)
+	//		delete RC;
+	//}
+};
+
+int high(NODE* p)
+{
+	if (!p)
+		return 0;
+	else
+	{
+		int lh = high(p->LC);
+		int rh = high(p->RC);
+		return 1 + (lh > rh ? lh : rh);
+	}
+}
+
+void AlgorithmExam::treeheight()
+{
+	int num = 0;
+	std::cin >> num;
+	NODE *p = new NODE[num];
+	
+	for (int i = 1; i < num; i++)
+	{
+		int a = 0;
+		int b = 0;
+		std::cin >> a >> b;
+		p[b].ID = b;
+		if (p[a].LC == nullptr)
+			p[a].LC = &p[b];
+		else if(p[a].RC == nullptr)
+			p[a].RC = &p[b];
+	}
+
+	std::cout << high(p);
+	delete p;
 }
