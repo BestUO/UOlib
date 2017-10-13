@@ -28,7 +28,35 @@ int main()
 	//std::cin >> ntask;
 	//aa.taskscheduling(ntask, nsvr, time);
 	//aa.maxnum();
-	aa.treeheight();
-    return 0;
+	//aa.treeheight();
+	//aa.reverseword();
+	//aa.phone();
+	//aa.flowernum();
+	//aa.arraysum();
+	//aa.CrossRiver();
+		using namespace std;
+
+		int n, a[10000], i;
+		cin >> n;
+		for (i = 0; i < n; i++)
+		{
+			cin >> a[i];
+		}
+		int count = 0;
+		for (i = 0; i < n; i++)
+		{
+			if (a[i] >= n - i)
+			{
+				count++;
+				n = i; i = -1;
+			}
+		}
+		if (n != 0)
+		{
+			cout << -1;
+		}
+		else cout << count;
+		return 0;
+
 }
 

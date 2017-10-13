@@ -1,3 +1,6 @@
-﻿  AlgorithmExam.cpp
-  UOalgorithm.vcxproj -> E:\project_test\vs2015\UOlib\Debug\UOalgorithm.exe
-  UOalgorithm.vcxproj -> E:\project_test\vs2015\UOlib\Debug\UOalgorithm.pdb (Full PDB)
+﻿  UOalgorithm.cpp
+  AlgorithmExam.cpp
+c:\users\owner\desktop\uolib\uoalgorithm\algorithmexam.cpp(400): warning C4018: “<”: 有符号/无符号不匹配
+  正在生成代码...
+  UOalgorithm.vcxproj -> C:\Users\owner\Desktop\UOlib\Debug\UOalgorithm.exe
+  UOalgorithm.vcxproj -> C:\Users\owner\Desktop\UOlib\Debug\UOalgorithm.pdb (Full PDB)

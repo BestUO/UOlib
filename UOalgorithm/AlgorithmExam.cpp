@@ -273,3 +273,159 @@ void AlgorithmExam::treeheight()
 	std::cout << high(p);
 	delete p;
 }
+
+void AlgorithmExam::reverseword()
+{
+	std::string str;
+	std::getline(std::cin, str);
+	std::vector<std::string> v;
+	size_t lastpos = 0;
+	while (true)
+	{
+		size_t pos = str.find(' ', lastpos);
+		v.push_back(str.substr(lastpos,pos - lastpos));
+		if (pos == str.npos)
+			break;
+		lastpos = pos + 1;
+	}
+	for (size_t i = v.size(); i > 1; i--)
+		std::cout << v[i - 1] << ' ';
+	std::cout << v[0];
+}
+
+void AlgorithmExam::phone()
+{
+	std::vector<std::string> v;
+
+	std::string snum;
+	std::getline(std::cin, snum);
+	for (int i = 0; i < std::stoi(snum); i++)
+	{
+		std::string str;
+		std::getline(std::cin, str);
+		v.push_back(str);
+	//}
+	//for (int i = 0; i < std::stoi(snum); i++)
+	//{
+		char l[26] = { 0 };
+		char n[10] = { 0 };
+		for (uint32_t j = 0; j < v[i].size(); j++)
+			l[v[i][j] - 'A']++;
+
+		n[0] = l['Z' - 'A'];
+		n[2] = l['W' - 'A'];
+		n[4] = l['U' - 'A'];
+		n[6] = l['X' - 'A'];
+		n[8] = l['G' - 'A'];
+
+		n[1] = l['O' - 'A'] - n[0] - n[2] - n[4];
+		n[3] = l['R' - 'A'] - n[0] - n[4];
+		n[5] = l['F' - 'A'] - n[4];
+		n[7] = l['S' - 'A'] - n[6];
+		n[9] = (l['N' - 'A'] - n[1] - n[7])/2;
+
+		std::vector<int> m;
+		for (int j = 0; j < 10; j++)
+		{
+			for (int k = 0; k < n[j]; k++)
+				m.push_back((j + 2) % 10);
+		}
+		std::sort(m.begin(), m.end());
+		for (auto t : m)
+			std::cout << t;
+		std::cout << std::endl;
+	}
+}
+
+bool sum(const int& n)
+{
+	int bai = n / 100;
+	int shi = (n / 10) % 10;
+	int ge = n % 10;
+	if (n == (pow(bai, 3) + pow(shi, 3) + pow(ge, 3)))
+		return true;
+	else return false;
+}
+
+void AlgorithmExam::flowernum()
+{
+	int min = 0;
+	int max = 0;
+	while (std::cin >> min >> max)
+	{
+		if (min > max)
+			break;
+		std::vector<int> v;
+		for (int i = min; i <= max; i++)
+		{
+			if (sum(i))
+				v.push_back(i);
+		}
+		if (v.size() != 0)
+		{
+			for (uint32_t j = 0; j < v.size() - 1; j++)
+				std::cout << v[j] << ' ';
+			std::cout << v[v.size() - 1];
+		}
+		else
+			std::cout << "no" << std::endl;
+	}
+}
+#include<iomanip>
+void AlgorithmExam::arraysum()
+{
+	float fir = 0;
+	int num = 0;
+	while (std::cin >> fir >> num)
+	{
+		float sum = fir;
+		for (int i = 1; i < num; i++)
+		{
+			fir = sqrtf(fir);
+			sum += fir;
+		}
+		std::cout << std::fixed << std::setprecision(2) << sum << std::endl;
+	}
+}
+
+void AlgorithmExam::CrossRiver()
+{
+	int len = 0;
+	std::cin >> len;
+	int t[10001] = { 0 };
+	//for (int i = 0; i < len; i++)
+	//	std::cin >> t[i];
+
+	std::string a("3 0 0 0 0 5 0 0 0 0");
+	for (int b = 0;b < a.size();b+=2)
+		t[b/2] = std::stoi(a.substr(b, 1));
+	int sum = t[0];
+	int num = 1;
+	int ID = 0;
+	bool fail = false;
+	while (sum < len)
+	{
+		int maxsum = 0;
+		int maxID = 0;
+		for (int i = 0; i < t[ID]; i++)
+		{
+			if (maxsum <= ID + (i + 1) + t[ID + i + 1])
+			{
+				maxsum = ID + (i + 1) + t[ID + i + 1];
+				maxID = ID + (i + 1);
+			}
+		}
+		ID = maxID;
+		if (!t[ID])
+		{
+			fail = true;
+			break;
+		}
+		sum = ID + t[ID];
+		num++;
+	}
+	if (fail)
+		std::cout << "-1" << std::endl;
+	else
+		std::cout << num << std::endl;
+}

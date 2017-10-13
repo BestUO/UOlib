@@ -175,6 +175,22 @@ public:
 };
 template <typename T> typename Singleton<T>::object_creator Singleton<T>::create_object;
 
+//class QMManager
+//{
+//protected:
+//	QMManager();
+//	~QMManager() {};
+//	friend class Singleton<QMManager>;
+//public:
+//	void do_something() {};
+//};
+//
+//int main()
+//{
+//	Singleton<QMManager>::instance()->do_something();
+//	return 0;
+//}
+
 /////////////////////////////////////////////Message Queue///////////////////////////////////////////////
 template <typename T>
 class MSGqueue
