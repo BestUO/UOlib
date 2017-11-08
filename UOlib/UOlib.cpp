@@ -3,7 +3,9 @@
 
 #include "stdafx.h"
 #include "UOSupport.h"
-#include<algorithm>
+#include <algorithm>
+#include"SingleManager.h"
+#include "wav.h"
 
 int main()
 {
@@ -69,7 +71,13 @@ int main()
 	//sb.connect(boost::bind(&UOObserver::test, ob1));
 	//sb.connect(boost::bind(&UOObserver::test, ob2));
 	//sb.EMITsignal();
-
+	 
+	//MANAGER.iniClientStruct();
+	//system("pause");
+	//MANAGER.disconnect();
+	MANAGER.iniServerStruct();
+	system("pause");
+	MANAGER.stopserver();
 	return 0;
 }
 

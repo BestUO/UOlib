@@ -30,6 +30,12 @@
     <ClInclude Include="Globle.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SingleManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="wav.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +45,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UOSupport.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

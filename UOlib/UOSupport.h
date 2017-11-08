@@ -11,117 +11,11 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/thread.hpp>
 #include <boost/signals2.hpp>
+#include <time.h>
 #include "Globle.h"
+#include <mutex>
 
-class UOSupport
-{
-public:
-	class UOFile
-	{
-	public:
-		UOFile();
-		~UOFile();
-		void WriteFile(std::string Path, char *data,int len);
-		int ReadFile(std::string Path, char *data);
-	};
-	class UOsort
-	{
-		//make_heap
-		//push_heap
-		//pop_heap
-		//sort_heap/std::partial_sort/std::sort	
-	};
-};
-
-class UDPClientSocketUO
-{
-public:
-	UDPClientSocketUO(std::string IP, int rport);
-	UDPClientSocketUO(std::string IP, int lport, int rport);
-	~UDPClientSocketUO();
-
-public:
-	void SynchroUDP_Send(const std::string &msg);
-	std::string SynchroUDP_Receive();
-
-private:
-	void IniSynchroUDP_Client(std::string IP, int lport, int rport);
-
-private:
-	boost::asio::io_service m_io_service;
-
-	boost::asio::ip::udp::endpoint m_remote_endpoint;
-	boost::asio::ip::udp::socket m_udpsock;
-};
-
-class UDPServerSocketUO
-{
-public:
-	UDPServerSocketUO(int lport);
-	~UDPServerSocketUO();
-
-private:
-	void Start_Receive();
-	void Handle_Receive(const boost::system::error_code& error, std::size_t);
-
-private:
-	boost::asio::ip::udp::endpoint m_remote_endpoint;
-	boost::asio::io_service m_io_service;
-	boost::asio::ip::udp::socket m_udpsock;
-};
-
-class TCPClientUO
-{
-public:
-	TCPClientUO();
-	~TCPClientUO(); 
-public:
-	void iniSynchroTCP_Client(std::string IP, int port);
-	void SynchroTCP_Send(const std::string msg);
-
-	std::string SynchroTCP_Recv();
-private:
-	boost::asio::io_service m_ios;
-	boost::asio::ip::tcp::socket m_socket;
-};
-
-class TCPServerUO
-{
-	typedef boost::shared_ptr<boost::asio::ip::tcp::socket> share_ptr_sock;
-public:
-	TCPServerUO();
-	~TCPServerUO();
-
-public:
-	void runSynchroTCP_Server(int port);
-	void runAsyncTCP_Server(int port);
-
-private:
-	void iniSynchroTCP_Server(const int &port);
-	void client_session(const boost::shared_ptr<boost::asio::ip::tcp::socket> &sock);
-
-	void iniAsyncTCP_Server(const int &port);
-	void start_accept();
-	void runthread();
-	void handle_accept(share_ptr_sock &sock,const boost::system::error_code &err);
-	void client_session2(share_ptr_sock &sock);
-	void handle_read(share_ptr_sock &sock, const boost::system::error_code &err, const std::size_t &bytes_transferred);
-	//void deadline_handler(share_ptr_sock &sock,const boost::system::error_code &err);
-
-	//void handle_accept(boost::asio::ip::tcp::socket *sock, const boost::system::error_code &err);
-	//void client_session2(boost::asio::ip::tcp::socket *sock);
-	//void handle_read(boost::asio::ip::tcp::socket *sock, const boost::system::error_code &err, const std::size_t &bytes_transferred);
-	//void deadline_handler(boost::asio::ip::tcp::socket *sock, const boost::system::error_code &err);
-
-private:
-	
-	boost::asio::io_service m_ios;
-	//::asio::ip::tcp::socket m_sock;
-	//boost::shared_ptr<boost::asio::ip::tcp::socket> m_psock;
-	boost::asio::ip::tcp::acceptor m_acc;
-	bool m_breaded;
-	char *m_buffer;
-};
+#define BUFSIZE 1460
 
 template <class T>
 class UOTemplate
@@ -175,109 +69,216 @@ public:
 };
 template <typename T> typename Singleton<T>::object_creator Singleton<T>::create_object;
 
-//class QMManager
-//{
-//protected:
-//	QMManager();
-//	~QMManager() {};
-//	friend class Singleton<QMManager>;
-//public:
-//	void do_something() {};
-//};
-//
-//int main()
-//{
-//	Singleton<QMManager>::instance()->do_something();
-//	return 0;
-//}
-
 /////////////////////////////////////////////Message Queue///////////////////////////////////////////////
 template <typename T>
 class MSGqueue
 {
 	typedef T struct_type;
 public:
-	MSGqueue() { memset(&m_Packet, 0, sizeof(struct_type)); }
-	~MSGqueue(){}
+	MSGqueue() { memset(&m_Packet, 0, sizeof(struct_type)); m_nSingals = 0; }
+	~MSGqueue() {}
 
 	int getsize()
 	{
-		boost::unique_lock<boost::shared_mutex> lock(m_mutex);
+		std::unique_lock<std::mutex> lock(m_mutex);
 		return m_MSGlist.size();
 	}
-	struct_type* getPacket()
+	struct_type getPacket()
 	{
-		boost::unique_lock<boost::shared_mutex> lock(m_mutex);
-		m_Packet = m_MSGlist.back();
-		m_MSGlist.pop_back();
-		return &m_Packet;
+		//WaitSignal();
+		std::unique_lock<std::mutex> lock(m_mutex);
+		if (!m_nSingals)
+			m_cv.wait(lock);
+		m_nSingals--;
+		if (m_MSGlist.size())
+		{
+			m_Packet = m_MSGlist.front();
+			m_MSGlist.pop_front();
+			return m_Packet;
+		}
+		else
+			return nullptr;
 	}
 	void putPacket(const struct_type &packet)
 	{
-		boost::unique_lock<boost::shared_mutex> lock(m_mutex);
-		m_MSGlist.push_front(packet);
+		std::unique_lock<std::mutex> lock(m_mutex);
+		m_nSingals++;
+		m_MSGlist.push_back(packet);
 		m_cv.notify_one();
 	}
-	bool haspacket()
-	{
-		boost::unique_lock<boost::mutex> lck(m_mtSig);
-		m_cv.wait(lck);
-		return true;
-	}
+
 private:
 	std::list<struct_type> m_MSGlist;
 	struct_type m_Packet;
-	boost::shared_mutex m_mutex;
-	boost::mutex m_mtSig;
+	std::mutex m_mutex;
+	std::condition_variable m_cv;
+	uint16_t m_nSingals;
+
+	bool WaitSignal()
+	{
+		std::unique_lock<std::mutex> lock(m_mutex);
+		if (!m_nSingals)
+			m_cv.wait(lock);
+		m_nSingals--;
+		return true;
+	}
+};
+
+class UOSupport
+{
 public:
-	boost::condition_variable m_cv;
+	class UOFile
+	{
+	public:
+		UOFile();
+		~UOFile();
+		void WriteFile(std::string Path, char *data,int len);
+		int ReadFile(std::string Path, char *data);
+	};
+};
+
+class SocketClientInterface
+{
+public:
+	virtual ~SocketClientInterface() {};
+	virtual void send(std::string s) = 0;
+	virtual std::string receive() = 0;
+	virtual void disconnect() = 0;
+};
+
+class UDPClientSocketUO : public SocketClientInterface
+{
+public:
+	UDPClientSocketUO(std::string IP, int rport);
+	~UDPClientSocketUO();
+	void send(std::string s)
+	{
+		SynchroUDP_Send(s);
+		//std::cout << SynchroUDP_Receive();
+	}
+	std::string receive() { return ""; }
+	void disconnect() { m_udpsock.close(); }
+private:
+	boost::asio::io_service m_io_service;
+	boost::asio::ip::udp::endpoint m_remote_endpoint;
+	boost::asio::ip::udp::socket m_udpsock;
+
+	bool IniSocket(std::string IP, int rport);
+	bool SynchroUDP_Send(const std::string &msg);
+	std::string SynchroUDP_Receive();
+};
+
+class TCPClientUO :public SocketClientInterface
+{
+public:
+	TCPClientUO(std::string IP, int port);
+	~TCPClientUO();
+	void send(std::string s)
+	{
+		SynchroTCP_Send(s);
+		//std::cout << SynchroTCP_Recv();
+	}
+	std::string receive() { return ""; }
+	void disconnect() { m_socket.close(); }
+private:
+	boost::asio::io_service m_ios;
+	boost::asio::ip::tcp::socket m_socket;
+
+	bool iniSynchroTCP_Client(std::string IP, int port);
+	bool SynchroTCP_Send(const std::string msg);
+
+	std::string SynchroTCP_Recv();
+};
+
+class SocketServerInterface
+{
+public:
+	virtual ~SocketServerInterface() {};
+	virtual void runserver(int port) = 0;
+	virtual void stopserver() = 0;
+	bool setMQdst(std::shared_ptr<MSGqueue<std::string>> pMQ) 
+	{
+		if (pMQ)
+		{
+			m_pMQ = pMQ;
+			return true;
+		}
+		return false;
+	}
+protected:
+	std::shared_ptr<MSGqueue<std::string>> m_pMQ;
+};
+
+//template <class TYPE> class MSGqueue;
+class UDPServerSocketUO : public SocketServerInterface
+{
+public:
+	UDPServerSocketUO();
+	~UDPServerSocketUO();
+
+	void runserver(int port);
+	void stopserver() { m_io_service.stop(); }
+
+private:
+	void Start_Receive();
+	void Handle_Receive(const boost::system::error_code& error, std::size_t bytes_transferred);
+	std::string MakePacket(char* data, int len);
+private:
+	std::string m_str;
+	char m_buf[BUFSIZE];
+	boost::asio::ip::udp::endpoint m_remote_endpoint;
+	boost::asio::io_service m_io_service;
+	boost::asio::ip::udp::socket m_udpsock;
+};
+
+class TCPServerUO : public SocketServerInterface
+{
+	typedef std::shared_ptr<boost::asio::ip::tcp::socket> share_ptr_sock;
+public:
+	TCPServerUO();
+	~TCPServerUO();
+
+	void runserver(int port);
+	void stopserver() { m_ios.stop(); }
+
+private:
+	void runSynchroTCP_Server(const int &port);
+	void client_session(const boost::shared_ptr<boost::asio::ip::tcp::socket> sock);
+	std::string MakePacket(char* data, int len);
+
+	void runAsyncTCP_Server(const int &port);
+	void iniAsyncTCP_Server(const int &port);
+	void start_accept();
+	void handle_accept(share_ptr_sock sock,const boost::system::error_code &err);
+	void client_session2(share_ptr_sock sock);
+	void handle_read(share_ptr_sock sock, const boost::system::error_code &err, const std::size_t &bytes_transferred);
+
+private:
+	boost::asio::io_service m_ios;
+	boost::asio::ip::tcp::acceptor m_acc;
+	bool m_breaded;
+	std::string m_str;
+	char m_buf[BUFSIZE];
 };
 
 /////////////////////////////////////////////Adaptor Class//////////////////////////////////////////////
-class Adaptor
-{
-public:
-	Adaptor(MSGqueue<STRPACKET> *in);
-	~Adaptor();
-	/////////////////////MQ To Socket
-	void SendToSocket();
-	/////////////////////MQ TO MQ
-	void SendToMQ();
-
-private:
-	std::string SerializePacket(const STRPACKET &packet);
-	STRPACKET UnSerializePacket(const std::string str);
-	STRPACKET* GetFromMQ(MSGqueue<STRPACKET>* in);
-	void PutToMQ(STRPACKET *packet);
-
-private:
-	MSGqueue<STRPACKET> *m_in;
-	MSGqueue<STRPACKET> *m_out;
-};
-
-///////////////////////////////////////subject better use Singleton class////////////////////////////////
-class UOSubject
-{
-	typedef boost::signals2::signal<void()> signal_t;
-	typedef signal_t::slot_type slot_t;
-public:
-	UOSubject() {}
-	~UOSubject() {}
-
-	boost::signals2::connection connect(const slot_t &s) { return m_signal.connect(s); }
-	//boost::signals2::connection connect(const boost::function<void()> &s) { return m_signal.connect(s); }
-	void EMITsignal() { m_signal(); }
-private:
-	signal_t m_signal;
-};
-///////////////////////////////////////////////////Observer//////////////////////////////////////////////
-class UOObserver
-{
-public:
-	UOObserver(std::string name):m_name(name) {}
-	UOObserver() {}
-
-	void test() { std::cout << m_name.c_str() << std::endl; }
-private:
-	std::string m_name;
-};
+//class Adaptor
+//{
+//public:
+//	Adaptor(MSGqueue<STRPACKET> *in);
+//	~Adaptor();
+//	/////////////////////MQ To Socket
+//	void SendToSocket();
+//	/////////////////////MQ TO MQ
+//	void SendToMQ();
+//
+//private:
+//	std::string SerializePacket(const STRPACKET &packet);
+//	STRPACKET UnSerializePacket(const std::string str);
+//	STRPACKET* GetFromMQ(MSGqueue<STRPACKET>* in);
+//	void PutToMQ(STRPACKET *packet);
+//
+//private:
+//	MSGqueue<STRPACKET> *m_in;
+//	MSGqueue<STRPACKET> *m_out;
+//};

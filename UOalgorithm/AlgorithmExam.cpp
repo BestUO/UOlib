@@ -393,12 +393,9 @@ void AlgorithmExam::CrossRiver()
 	int len = 0;
 	std::cin >> len;
 	int t[10001] = { 0 };
-	//for (int i = 0; i < len; i++)
-	//	std::cin >> t[i];
+	for (int i = 0; i < len; i++)
+		std::cin >> t[i];
 
-	std::string a("3 0 0 0 0 5 0 0 0 0");
-	for (int b = 0;b < a.size();b+=2)
-		t[b/2] = std::stoi(a.substr(b, 1));
 	int sum = t[0];
 	int num = 1;
 	int ID = 0;
@@ -428,4 +425,121 @@ void AlgorithmExam::CrossRiver()
 		std::cout << "-1" << std::endl;
 	else
 		std::cout << num << std::endl;
+}
+
+int finds1(const char* a,int arraylen,std::string s,int findlen)
+{
+	for (int j = 0; j < arraylen; j++)
+	{
+		const char*b = a + j;
+		bool tmp;
+		for (int i = 0; i < s.size(); i++)
+		{
+			tmp = false;
+			for (int k = 0; k < findlen; k++)
+			{
+				if (s[i] == b[k])
+				{
+					tmp = true;
+					break;
+				}
+			}
+			if (!tmp)
+				break;
+		}
+		if (tmp)
+			return j;
+	}
+	return 0;
+}
+
+void AlgorithmExam::gemstone()
+{
+	std::string str;
+	std::string s = "ABCED";
+	while (std::cin >> str)
+	{
+		int len = str.size() + str.size() - 1;
+		char* tmp = new char[len];
+		memcpy(tmp, str.data(), str.size());
+		memcpy(tmp + str.size(), tmp, str.size() - 1);
+		
+		int n = 0;
+		for (int i = s.size();i <= str.size();i++)
+		{
+			n = finds1(tmp, len, s, i);
+			if (n)
+			{
+				n = i;
+				break;
+			}
+		}
+
+		delete tmp;
+		tmp = nullptr;
+		if (n)
+			std::cout << str.size() - n << std::endl;
+		else
+			std::cout << 0 << std::endl;
+	}
+}
+
+void AlgorithmExam::maxnum2()
+{
+	std::string str;
+	int cnt = 0;
+	while (std::cin >> str >> cnt)
+	{
+		std::string out;
+		while (cnt)
+		{
+			int ind = 0;
+			for (size_t i = 0; i < str.size() - 1; i++)
+			{
+				if (str[i] < str[i + 1])
+				{
+					str.erase(str.begin() + i);
+					cnt--;
+					break;
+				}
+				else if (i + 1 == str.size() - 1)
+				{
+					str.erase(str.begin() + i + 1);
+					cnt--;
+				}
+			}
+		}
+		std::cout << str << std::endl;
+	}
+}
+
+void AlgorithmExam::firstthree()
+{
+	std::string s;
+	while (std::getline(std::cin, s))
+	{
+		int a[26] = { 0 };
+		int b[26] = { 0 };
+		for (size_t i = 0; i < s.size(); i++)
+		{
+			if (s[i] >= 'a' && s[i] <= 'z')
+			{
+				a[s[i] - 'a']++;
+				if (a[s[i] - 'a'] == 3)
+				{
+					std::cout << s[i] << std::endl;
+					break;
+				}
+			}
+			else if(s[i] >= 'A' && s[i] <= 'Z')
+			{
+				b[s[i] - 'A']++;
+				if (b[s[i] - 'A'] == 3)
+				{
+					std::cout << s[i] << std::endl;
+					break;
+				}
+			}
+		}
+	}
 }

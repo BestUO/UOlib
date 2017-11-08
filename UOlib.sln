@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DLLImport", "DLLImport\DLLI
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UOalgorithm", "UOalgorithm\UOalgorithm.vcxproj", "{D8A27C81-C3A4-4622-B933-F4DAD30E271D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Jsontest", "Jsontest\Jsontest.vcxproj", "{BED0430B-F44E-42EA-990E-1E0BAF999854}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -59,6 +61,14 @@ Global
 		{D8A27C81-C3A4-4622-B933-F4DAD30E271D}.Release|x64.Build.0 = Release|x64
 		{D8A27C81-C3A4-4622-B933-F4DAD30E271D}.Release|x86.ActiveCfg = Release|Win32
 		{D8A27C81-C3A4-4622-B933-F4DAD30E271D}.Release|x86.Build.0 = Release|Win32
+		{BED0430B-F44E-42EA-990E-1E0BAF999854}.Debug|x64.ActiveCfg = Debug|x64
+		{BED0430B-F44E-42EA-990E-1E0BAF999854}.Debug|x64.Build.0 = Debug|x64
+		{BED0430B-F44E-42EA-990E-1E0BAF999854}.Debug|x86.ActiveCfg = Debug|Win32
+		{BED0430B-F44E-42EA-990E-1E0BAF999854}.Debug|x86.Build.0 = Debug|Win32
+		{BED0430B-F44E-42EA-990E-1E0BAF999854}.Release|x64.ActiveCfg = Release|x64
+		{BED0430B-F44E-42EA-990E-1E0BAF999854}.Release|x64.Build.0 = Release|x64
+		{BED0430B-F44E-42EA-990E-1E0BAF999854}.Release|x86.ActiveCfg = Release|Win32
+		{BED0430B-F44E-42EA-990E-1E0BAF999854}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
