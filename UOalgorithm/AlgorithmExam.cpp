@@ -433,7 +433,7 @@ int finds1(const char* a,int arraylen,std::string s,int findlen)
 	{
 		const char*b = a + j;
 		bool tmp;
-		for (int i = 0; i < s.size(); i++)
+		for (size_t i = 0; i < s.size(); i++)
 		{
 			tmp = false;
 			for (int k = 0; k < findlen; k++)
@@ -465,7 +465,7 @@ void AlgorithmExam::gemstone()
 		memcpy(tmp + str.size(), tmp, str.size() - 1);
 		
 		int n = 0;
-		for (int i = s.size();i <= str.size();i++)
+		for (size_t i = s.size();i <= str.size();i++)
 		{
 			n = finds1(tmp, len, s, i);
 			if (n)
@@ -540,6 +540,118 @@ void AlgorithmExam::firstthree()
 					break;
 				}
 			}
+		}
+	}
+}
+
+void AlgorithmExam::IDdivide()
+{
+	std::string str;
+	while (std::getline(std::cin,str))
+	{
+		int len = str.size();
+		int pos = 0;
+		for (int i = 0; i < len; i++)
+		{
+			if (str[i] == ' ')
+				continue;
+			else
+			{
+				std::cout << str[i];
+				++pos;
+				if (pos == 6 || pos == 14)
+					std::cout << ' ';
+			}
+
+		}
+		std::cout << std::endl;
+	}
+}
+
+void AlgorithmExam::hotelprice()
+{
+	int prices[10000] = { 0 };
+	int first, last, price;
+	std::cin >> first >> last >> price;
+
+	int min = first;
+	int max = last;
+	for (int i = first; i <= last; i++)
+		prices[i] = price;
+	while (std::cin >> first >> last >> price)
+	{
+		min = min < first?min:first;
+		max = max > last?max:last;
+		for (int i = first; i <= last; i++)
+			prices[i] = price;
+	}
+	bool newone = true;
+	for (int i = min; i < max+1; i++)
+	{
+		if (!prices[i])
+			continue;
+		if (newone)
+		{
+			newone = false;
+			std::cout << '[' << i << ',';
+			if (prices[i] != prices[i + 1])
+			{
+				newone = true;
+				std::cout << i << ',' << prices[i] << ']';
+				if (i != max)
+					std::cout << ',';
+			}
+		}
+		else
+		{
+			if (prices[i] != prices[i+1])
+			{
+				newone = true;
+				std::cout << i << ',' << prices[i] << ']';
+				if (i != max)
+					std::cout << ',';
+			}
+		}
+	}
+}
+
+void AlgorithmExam::fileextension()
+{
+	std::string str;
+	while (std::getline(std::cin,str))
+	{
+		int pos = str.find('.');
+		if (pos != -1)
+			std::cout << str.substr(pos + 1);
+		else
+			std::cout << "null";
+	}
+}
+
+void AlgorithmExam::intplus()
+{
+	std::string str;
+	while (std::getline(std::cin, str))
+	{
+		bool iserror = false;
+		for (size_t i = 0; i < str.size(); i++)
+		{
+			if (str[i] != ' ')
+			{
+				if (!isdigit(str[i]))
+				{
+					std::cout << "error" << std::endl;
+					iserror = true;
+					break;
+				}
+			}
+		}
+		if (!iserror)
+		{
+			int pos = str.find(' ');
+			int first = std::stoi(str.substr(0, pos));
+			int second = std::stoi(str.substr(pos + 1));
+			std::cout << first + second << std::endl;
 		}
 	}
 }

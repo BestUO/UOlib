@@ -53,6 +53,14 @@ public:
 	void maxnum2();
 	//给定一个英文字符串,请写一段代码找出这个字符串中首先出现三次的那个英文字符。
 	void firstthree();
+	//身份证分组
+	void IDdivide();
+	//hotelprice
+	void hotelprice();
+	//fileextension
+	void fileextension();
+	//intplus
+	void intplus();
 private:
 	///////数塔问题:
 	int maxtwo(const uint32_t *data, int y, int x);

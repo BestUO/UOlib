@@ -6,7 +6,7 @@
 #include <algorithm>
 #include"SingleManager.h"
 #include "wav.h"
-
+#include <io.h>
 int main()
 {
 	//uint16_t a = 32778;
@@ -19,6 +19,12 @@ int main()
 	//char t[10240] = { 0 };
 	//int len = aa.ReadFile("UO.data", t);
 	//uint16_t *c = (uint16_t*)t;
+
+	//char dir[200];
+	//cout << "Enter a directory: ";
+	//cin.getline(dir, 200);
+	//UOSupport::UOFile aa;
+	//aa.listFiles(dir);
 
 	//UDPClientSocketUO tt("127.0.0.1",6000);
 	//tt.SynchroUDP_Send("hhaha");
@@ -75,9 +81,10 @@ int main()
 	//MANAGER.iniClientStruct();
 	//system("pause");
 	//MANAGER.disconnect();
-	MANAGER.iniServerStruct();
-	system("pause");
-	MANAGER.stopserver();
+	//MANAGER.iniServerStruct();
+	//system("pause");
+	//MANAGER.stopserver();
+	system("md test");
 	return 0;
 }
 

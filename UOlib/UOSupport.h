@@ -83,7 +83,7 @@ public:
 		std::unique_lock<std::mutex> lock(m_mutex);
 		return m_MSGlist.size();
 	}
-	struct_type getPacket()
+	bool getPacket(struct_type& packet)
 	{
 		//WaitSignal();
 		std::unique_lock<std::mutex> lock(m_mutex);
@@ -92,12 +92,12 @@ public:
 		m_nSingals--;
 		if (m_MSGlist.size())
 		{
-			m_Packet = m_MSGlist.front();
+			packet = m_MSGlist.front();
 			m_MSGlist.pop_front();
-			return m_Packet;
+			return true;
 		}
 		else
-			return nullptr;
+			return false;
 	}
 	void putPacket(const struct_type &packet)
 	{
@@ -132,8 +132,11 @@ public:
 	public:
 		UOFile();
 		~UOFile();
+		bool FileExiste(std::string path);
 		void WriteFile(std::string Path, char *data,int len);
 		int ReadFile(std::string Path, char *data);
+		void listFiles(const char * dir);
+		std::string gettimenow();
 	};
 };
 

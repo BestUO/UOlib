@@ -2,6 +2,7 @@
 #include <boost/lexical_cast.hpp>  
 #include <boost/bind.hpp>
 #include <errno.h>
+#include <io.h>
 //////////////////UOSupport::UOFile/////////////////////////////////////////////
 UOSupport::UOFile::UOFile()
 {
@@ -9,6 +10,13 @@ UOSupport::UOFile::UOFile()
 
 UOSupport::UOFile::~UOFile()
 {
+}
+
+bool UOSupport::UOFile::FileExiste(std::string path)
+{
+	if (-1 != _access(path.c_str(), 0))
+		return true;
+	return false;
 }
 
 void UOSupport::UOFile::WriteFile(std::string Path,char *data, int len)
@@ -31,6 +39,52 @@ int UOSupport::UOFile::ReadFile(std::string Path, char *data)
 		len = fread(data, 1,10240, fp);
 	fclose(fp);
 	return len;
+}
+
+void UOSupport::UOFile::listFiles(const char * dir)
+{
+	char dirNew[200];
+	strcpy_s(dirNew, dir);
+	strcat_s(dirNew, "\\*.*");    // 在目录后面加上"\\*.*"进行第一次搜索
+
+	intptr_t handle;
+	_finddata_t findData;
+
+	handle = _findfirst(dirNew, &findData);
+	if (handle == -1)        // 检查是否成功
+		return;
+
+	do
+	{
+		if (findData.attrib & _A_SUBDIR)
+		{
+			if (strcmp(findData.name, ".") == 0 || strcmp(findData.name, "..") == 0)
+				continue;
+
+			std::cout << findData.name << "\t<dir>\n";
+
+			// 在目录后面加上"\\"和搜索到的目录名进行下一次搜索
+			strcpy_s(dirNew, dir);
+			strcat_s(dirNew, "\\");
+			strcat_s(dirNew, findData.name);
+
+			listFiles(dirNew);
+		}
+		else
+			std::cout << findData.name << "\t" << findData.size << " bytes.\n";
+	} while (_findnext(handle, &findData) == 0);
+
+	_findclose(handle);    // 关闭搜索句柄
+}
+
+std::string UOSupport::UOFile::gettimenow()
+{
+	struct tm t;   //tm结构指针
+	time_t now;  //声明time_t类型变量
+	time(&now);      //获取系统日期和时间
+	localtime_s(&t, &now);   //获取当地日期和时间
+
+	return std::to_string(t.tm_year + 1900) + std::to_string(t.tm_mon + 1) + std::to_string(t.tm_mday);
 }
 
 /////////////////////////////////////////UDP_Client//////////////////////////////

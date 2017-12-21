@@ -1,5 +1,3 @@
 ﻿  AlgorithmExam.cpp
-c:\users\owner\desktop\uolib\uoalgorithm\algorithmexam.cpp(436): warning C4018: “<”: 有符号/无符号不匹配
-c:\users\owner\desktop\uolib\uoalgorithm\algorithmexam.cpp(468): warning C4018: “<=”: 有符号/无符号不匹配
   UOalgorithm.vcxproj -> C:\Users\owner\Desktop\UOlib\Debug\UOalgorithm.exe
   UOalgorithm.vcxproj -> C:\Users\owner\Desktop\UOlib\Debug\UOalgorithm.pdb (Full PDB)

@@ -25,9 +25,10 @@ void CDealData::DealDataAndSend()
 {
 	while (m_pMQsrc && !m_stop)
 	{
-		std::string s = m_pMQsrc->getPacket();
-		s = DealData(s);
-		SendToMQ(s);
+		std::string str;
+		m_pMQsrc->getPacket(str);
+		str = DealData(str);
+		SendToMQ(str);
 	}
 }
 
@@ -61,8 +62,9 @@ void AdaptorClient::Send()
 {
 	while (m_pMQ && !m_stop)
 	{
-		std::string s = m_pMQ->getPacket();
-		m_psock->send(s);
+		std::string str;
+		m_pMQ->getPacket(str);
+		m_psock->send(str);
 	}
 	return;
 }

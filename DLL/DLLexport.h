@@ -24,7 +24,7 @@ public:
 };
 extern "C" INTERFACE_API DLLClass* TCreatDLLClass(void);
 
-//////////////////////////////////导出一个类，但是符号名是乱的
+//////////////////////////////////导出一个类，但是符号名是乱的,不建议这么做
 class INTERFACE_API UOSupport
 {
 public:

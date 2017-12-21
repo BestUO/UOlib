@@ -36,6 +36,10 @@ int main()
 	//aa.CrossRiver();
 	//aa.gemstone();
 	//aa.maxnum2();
-	aa.firstthree();
+	//aa.firstthree();
+	//aa.IDdivide();
+	//aa.hotelprice();
+	//aa.fileextension();
+	aa.intplus();
 }
 
